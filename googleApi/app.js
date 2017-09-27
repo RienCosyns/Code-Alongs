@@ -1,37 +1,6 @@
 function myMap() {
-  //   var map;
-  // display location by reverse geocoding
-  function geocodeLatLng(geocoder, latlng) {
-    geocoder.geocode({ location: latlng }, function(results, status) {
-      console.log(status);
-      if (status === "OK") {
-        //console.log(results);
-        // display position in human readible form
-        var h2 = document.createElement("h2");
-        h2.innerHTML = results[0].formatted_address;
-        document.getElementById("location").appendChild(h2);
-        // display position on a map
-        map = new google.maps.Map(document.getElementById("googleMap"), {
-          center: latlng,
-          zoom: 15
-        });
-        //create a marker
-        var marker = new google.maps.Marker({
-          position: latlng,
-          title: "Elium Academy",
-          animation: google.maps.Animation.DROP,
-          draggable: true
-          // map: map
-        });
-        marker.setMap(map);
-        // add a marker on click
-        initListeners(map);
-      }
-    });
-  }
-
   // get geolocation
-  function getGeoLocation() {
+  function getCurrentLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         // console.log(position);
@@ -39,31 +8,81 @@ function myMap() {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        var geocoder = new google.maps.Geocoder();
-        geocodeLatLng(geocoder, latlng);
+        showCurrentPosition(latlng);
       });
     }
   }
+  // display location by reverse geocoding
+  function showCurrentPosition(latlng) {
+    var geocoder = new google.maps.Geocoder();
+    reverseGeocode(geocoder, latlng, printPosition);
+    // display position on a map
+    map = createMap(document.getElementById("googleMap"), latlng, 15);
+    //create a marker
+    addMarker(latlng, map);
+    // initialize my map listeners
+    initListeners(map);
+  }
 
-  // add a marker on click
+  function reverseGeocode(geocoder, latlng, display) {
+    geocoder.geocode({ location: latlng }, function(results, status) {
+      if (status === "OK") {
+        display(results);
+      } else {
+        alert("ERROR");
+        console.log(status);
+      }
+    });
+  }
+
+  function printPosition(address) {
+    // display position in human readible form
+    var location = document.getElementById("location");
+    if (location.innerHTML) {
+      location.innerHTML = "";
+    }
+    var h2 = document.createElement("h2");
+    h2.innerHTML = address[0].formatted_address;
+    location.appendChild(h2);
+  }
+
+  function createMap(holder, latlng, zoomLevel) {
+    return new google.maps.Map(holder, {
+      center: latlng,
+      zoom: zoomLevel
+    });
+  }
+
+  // add a marker
   function addMarker(location, map) {
     var newMarker = new google.maps.Marker({
       position: location,
       map: map,
-      animation: google.maps.Animation.DROP
+      animation: google.maps.Animation.DROP,
+      draggable: true
     });
   }
-  //pass in a location
+
+  // get location from click on map
+  // function showNewLocation(latlng, map, addMarker) {
+  //   let geocoder = new google.maps.Geocoder();
+  //   reverseGeocode(geocoder, latlng, printPosition);
+  //   addMarker(latlng, map);
+  // }
   document
     .getElementById("locationButton")
     .addEventListener("click", function() {
-      getGeoLocation();
+      getCurrentLocation();
     });
 
   function initListeners(map) {
     google.maps.event.addListener(map, "click", function(event) {
       console.log(event);
-      addMarker(event.latLng, map);
+      var latLng = event.latLng;
+      // before add marker, get formatted address from location
+      // showNewLocation(latLng, map, addMarker);
+      // addMarker(event.latLng, map);
+      showCurrentPosition(latLng);
     });
   }
 }
