@@ -1,2 +1,4 @@
 node_modules
 md-api/src/config.js
+./src/config.js
+config.js
