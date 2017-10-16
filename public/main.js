@@ -16,10 +16,12 @@ function sendDeleteRequest(id) {
 
   fetch(request)
     .then(response => {
+      //console.log(response);
       return response.json();
       //return response.json();
     })
-    .then(message => {
+    .then(body => {
+      var message = body.name + " has been deleted!";
       alert(message);
       window.location.href = "/";
     })

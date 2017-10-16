@@ -2,8 +2,12 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var path = require("path");
+var database = require("./config/database");
 
 var port = 3000;
+
+// start the database
+database.startDb();
 
 // set up middleware
 app.use(bodyParser.urlencoded({ extended: false }));
