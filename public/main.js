@@ -10,8 +10,7 @@ window.onload = function() {
 
 function sendDeleteRequest(id) {
   var request = new Request("/students/profile/" + id, {
-    method: "DELETE",
-    redirect: "follow"
+    method: "DELETE"
   });
 
   fetch(request)
@@ -23,7 +22,7 @@ function sendDeleteRequest(id) {
     .then(body => {
       var message = body.name + " has been deleted!";
       alert(message);
-      window.location.href = "/";
+      window.location.href = "/students/";
     })
     .catch(error => console.log(error));
 }

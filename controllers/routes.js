@@ -3,9 +3,18 @@ var router = express.Router();
 var data = require("../models/students");
 var Student = require("../models/studentSchema");
 
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    req.flash("danger", "Please log in");
+    res.redirect("/");
+  }
+}
+
 // Read
 
-router.get("/", (req, res) => {
+router.get("/", isLoggedIn, (req, res) => {
   Student.getAll((err, students) => {
     if (err) {
       console.log(err);
@@ -18,7 +27,7 @@ router.get("/", (req, res) => {
 });
 
 // CREATE
-router.get("/add", (req, res) => {
+router.get("/add", isLoggedIn, (req, res) => {
   var message = "Please fill in the form";
   res.render("addStudent", { message: message });
 });
@@ -48,11 +57,11 @@ router.post("/add", (req, res) => {
 });
 
 // Get one Student
-router.get("/profile/:id", (req, res) => {
+router.get("/profile/:id", isLoggedIn, (req, res) => {
   var id = req.params.id;
   Student.getStudentById(id)
     .then(student => {
-      console.log(student);
+      //console.log(student);
       res.render("profile", { message: null, student: student });
     })
     .catch(error => console.log(error));
@@ -60,7 +69,7 @@ router.get("/profile/:id", (req, res) => {
   // res.render("profile", { message: null, student: data.getStudentById(id) });
 });
 
-router.post("/profile/:id", (req, res) => {
+router.post("/profile/:id", isLoggedIn, (req, res) => {
   var id = req.params.id;
   var obj = req.body;
   var message = "";
@@ -69,9 +78,9 @@ router.post("/profile/:id", (req, res) => {
       message = err;
     } else {
       message = "Student successfully modified";
-      console.log(updatedStudent);
+      //console.log(updatedStudent);
     }
-    res.redirect("/");
+    res.redirect("/students");
   });
 });
 
@@ -79,8 +88,10 @@ router.delete("/profile/:id", (req, res) => {
   var id = req.params.id;
   Student.deleteStudent(id, (err, deletedStudent) => {
     if (err) {
+      console.log(err);
       res.json(err);
     } else {
+      console.log(deletedStudent);
       res.json(deletedStudent);
     }
   });

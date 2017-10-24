@@ -1,10 +1,58 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: #ccc;
+}
+
+nav {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+nav ul li {
+  display: inline-block;
+  padding: 10px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+nav ul li a:hover {
+  color: gold;
 }
 
 .container {
   width: 50%;
   margin: 0 auto;
+}
+
+.success {
+  background-color: green;
+  color: white;
+  width: 50%;
+  margin: 0 auto;
+  height: 25px;
+  padding: 10px;
+  text-align: center;
+  list-style: none;
+}
+
+.danger {
+  background-color: red;
+  color: black;
+  list-style: none;
+  width: 50%;
+  margin: 0 auto;
+  height: 25px;
+  padding: 10px;
+  text-align: center;
 }
 
 h1 {
